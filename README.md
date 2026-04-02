@@ -1,4 +1,5 @@
-#   E-commerce Data Pipeline (dbt + BigQuery Ready)
+#   E-commerce Analytics Project 
+**Technologies:** dbt, Postgres (local), BigQuery-compatible 
 
 ##   Overview
 
