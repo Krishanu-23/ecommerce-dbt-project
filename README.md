@@ -1,468 +1,194 @@
-Perfect — let’s reset and give you a **clean, consistent, interview-ready README** with **NO contradictions**.
+# 🛒 E-commerce Data Pipeline (dbt + BigQuery Ready)
 
-This version strictly follows your final design:
+## 📌 Overview
 
-```text
-FACT = immutable (append-only)
-NO updates
-NO merge
-ONLY insert new primary keys
-```
+This project implements an end-to-end data pipeline for an **e-commerce analytics use case** using dbt.
+
+It simulates a production-style workflow where raw transactional data is transformed into analytics-ready datasets through a layered modeling approach.
 
 ---
 
-# 📘 DATA ENGINEERING PIPELINE (DBT + SQL)
+## 🏗 Architecture
+
+Raw Data → Staging → Dimensions → Fact → Marts → Analytics
 
 ---
 
-# 🏗️ ARCHITECTURE OVERVIEW
+## 📂 Project Structure
 
-```text
-SOURCE (OLTP) → RAW → STAGING → FACT → DIMENSIONS
-```
+models/ staging/ stg_orders.sql stg_order_items.sql schema.yml
 
----
+marts/ dim/ dim_users.sql dim_products.sql dim_date.sql schema.yml
 
-# 🧠 DESIGN PRINCIPLES
+fact/
+  fact_order_items.sql
+  mart_orders.sql
+  mart_revenue_by_month.sql
+  mart_top_products.sql
+  schema.yml
 
-```text
-✔ Separation of concerns across layers
-✔ Idempotent transformations
-✔ Incremental processing where needed
-✔ Fact tables are immutable (append-only)
-✔ Dimensions handle attribute changes
-```
+analytics/
+  analytics_revenue_trend.sql
 
 ---
 
-# 📦 1. RAW LAYER
+## 🔹 Staging Layer
 
----
+The staging layer standardizes and cleans raw source data.
 
-## 🎯 Purpose
-
-```text
-Capture data from source systems incrementally
-```
-
----
-
-## ⚙️ Logic
-
-```text
-✔ Use updated_at for change detection
-✔ Load only new/updated records
-✔ Append-only (no deletes/updates)
-✔ Store ingestion metadata (optional)
-```
-
----
-
-## 🧠 Behavior
-
-```text
-✔ Maintains full history
-✔ Multiple rows per primary key possible
-```
-
----
-
-## 🧠 Key Concept
-
-```text
-RAW = historical source of truth
-```
-
----
-
-# 🧼 2. STAGING LAYER (dbt models)
-
----
-
-## 🎯 Purpose
-
-```text
-Clean, standardize, and deduplicate raw data
-```
-
----
-
-## ⚙️ Logic
-
-```sql
-SELECT *
-FROM (
-    SELECT *,
-           ROW_NUMBER() OVER (
-               PARTITION BY primary_key
-               ORDER BY updated_at DESC
-           ) AS rn
-    FROM raw_table
-)
-WHERE rn = 1
-```
-
----
-
-## 🧠 Behavior
-
-```text
-✔ One row per primary key
-✔ Latest version only
-✔ Clean dataset
-✔ Full refresh (table materialization)
-```
-
----
-
-## 🧠 Key Concept
-
-```text
-STAGING = latest snapshot (not historical)
-```
-
----
-
-# 📊 3. FACT TABLE (IMMUTABLE)
-
----
-
-## 🎯 Purpose
-
-```text
-Store business events and measurable metrics
-```
-
----
-
-## 🧠 Structure
-
-```text
-Fact = Grain + Foreign Keys + Metrics
-```
+- Renames columns for consistency  
+- Handles basic transformations  
+- Serves as the foundation for downstream models  
 
 Example:
-
-```text
-Grain: order_items_id
-Keys: order_id, product_id, user_id
-Metrics: quantity, revenue
-```
+- `stg_orders`
+- `stg_order_items`
 
 ---
 
-## ⚙️ Logic
+## ⚙️ Key Features
 
-```text
-✔ Join staging tables
-✔ Compute metrics
-✔ Insert only new records
-✔ No updates to existing rows
-```
-
----
-
-## 🔁 Incremental Logic (IMPORTANT)
-
-```sql
--- Insert only new primary keys
-SELECT ...
-FROM stg_order_items s
-LEFT JOIN fact_order_items f
-  ON s.order_items_id = f.order_items_id
-WHERE f.order_items_id IS NULL
-```
+- Layered data modeling using dbt  
+- Star schema design (fact + dimensions)  
+- Aggregated marts for business use cases  
+- Analytics layer using SQL window functions  
+- Data quality testing (dbt tests)  
+- Clean separation of concerns  
 
 ---
 
-## 🧠 Behavior
+## 🧱 Data Model
 
-```text
-✔ Append-only
-✔ Immutable
-✔ Primary key driven
-✔ No updates, no deletes
-```
+### 🔹 Fact Table
+- `fact_order_items`  
+  - Grain: **1 row per order_item**  
+  - Contains transactional data enriched with keys  
 
 ---
 
-## 🧠 Why no updated_at here?
-
-```text
-✔ Deduplication already handled in staging
-✔ Fact represents events, not changing attributes
-✔ Incremental driven by primary key existence
-```
+### 🔹 Dimension Tables
+- `dim_users`  
+- `dim_products`  
+- `dim_date`  
 
 ---
 
-## 🧠 Key Concept
+### 🔹 Marts
 
-```text
-FACT = historical events (do not change)
-```
+#### `mart_orders`
+- Grain: **1 row per order_item**  
+- Fully enriched dataset (joins fact + dimensions)  
+- Acts as the **core analytical table**  
 
----
+#### `mart_revenue_by_month`
+- Grain: **1 row per (year, month)**  
+- Aggregated revenue metrics  
 
-# 📦 4. DIMENSIONS
-
----
-
-# 🟢 SCD1 (Overwrite)
-
----
-
-## 🎯 Purpose
-
-```text
-Store latest attribute values
-```
+#### `mart_top_products`
+- Grain: **1 row per product**  
+- Product-level performance metrics  
 
 ---
 
-## ⚙️ Logic
+### 🔹 Analytics Layer
 
-```sql
-SELECT * FROM stg_table
-```
-
----
-
-## 🧠 Behavior
-
-```text
-✔ Latest state only
-✔ Overwrites previous values
-✔ No history tracking
-```
+#### `analytics_revenue_trend`
+- Running (cumulative) revenue  
+- Month-over-month growth using window functions  
 
 ---
 
-# 🔵 SCD2 (History Tracking)
+## 🧠 Concepts Covered
+
+- Dimensional modeling (star schema)  
+- Grain definition and correctness  
+- Aggregations and metric design  
+- Window functions (`SUM OVER`, `LAG`)  
+- Data quality testing (dbt tests)  
+- Separation of concerns (model vs analytics)  
 
 ---
 
-## 🎯 Purpose
-
-```text
-Track attribute changes over time
-```
-
----
-
-## ⚙️ Columns
-
-```text
-✔ valid_from
-✔ valid_to
-✔ is_current
-```
-
----
-
-## 🧠 Behavior
-
-```text
-✔ Insert new row when attribute changes
-✔ Preserve old rows (history)
-✔ Mark old rows as inactive
-```
-
----
-
-## 🧠 Example
-
-| user_id | country | valid_from | valid_to | is_current |
-| ------- | ------- | ---------- | -------- | ---------- |
-| 1       | India   | t1         | t2       | false      |
-| 1       | US      | t2         | NULL     | true       |
-
----
-
-## 🧠 Key Concept
-
-```text
-DIMENSIONS = where updates and history are handled
-```
-
----
-
-# 🔁 INCREMENTAL STRATEGY SUMMARY
-
----
-
-| Layer      | Strategy                      |
-| ---------- | ----------------------------- |
-| RAW        | updated_at based incremental  |
-| STAGING    | full refresh (dedup)          |
-| FACT       | primary key based incremental |
-| DIM (SCD1) | full refresh                  |
-| DIM (SCD2) | insert new versions           |
-
----
-
-# 🧠 DBT CONCEPTS
-
----
-
-# 🔹 source()
-
-```sql
-{{ source('raw', 'raw_orders') }}
-```
-
-```text
-Refers to external/raw tables
-```
-
----
-
-# 🔹 ref()
-
-```sql
-{{ ref('stg_orders') }}
-```
-
-```text
-Refers to dbt models and builds dependency graph
-```
-
----
-
-# 🔹 materializations
-
-```text
-table → full rebuild
-view → logical view
-incremental → partial load
-```
-
----
-
-# 🔹 is_incremental()
-
-```sql
-{% if is_incremental() %}
-   -- incremental logic
-{% endif %}
-```
-
----
-
-# 🔹 {{ this }}
-
-```text
-Refers to current model table
-```
-
----
-
-# ⚙️ DBT COMMANDS
-
----
-
-## ▶️ Run pipeline
+## 🚀 How to Run
 
 ```bash
 dbt run
-```
+dbt test
+
 
 ---
 
-## 🎯 Run specific model
+🧪 Testing
 
-```bash
-dbt run --select model_name
-```
+The project includes:
 
----
+not_null tests
 
-## 🔍 Preview data
+unique tests
 
-```bash
-dbt show --select model_name
-```
+relationships tests (fact ↔ dimensions)
+
+
 
 ---
 
-## 📋 List models
+📊 Business Use Cases
 
-```bash
-dbt ls
-```
+Analyze revenue trends over time
 
----
+Identify top-performing products
 
-## 🔄 Full refresh
+Track order volume and sales performance
 
-```bash
-dbt run --full-refresh
-```
+Enable user-level analytics and segmentation
+
+
 
 ---
 
-# 🔄 DBT EXECUTION FLOW
+🚧 Work in Progress
 
-```text
-1. Read SQL models
-2. Resolve source() and ref()
-3. Build DAG (dependencies)
-4. Execute in correct order
-```
+BigQuery partitioning & clustering
 
----
+Incremental models for large tables
 
-# 🧠 DAG EXAMPLE
+Cost optimization strategies
 
-```text
-raw_orders
-   ↓
-stg_orders
-   ↓
-fact_order_items
-   ↓
-dim tables
-```
+
 
 ---
 
-# 🧠 FINAL MENTAL MODEL
+🔮 Future Enhancements
 
-```text
-RAW → capture history
-STAGING → clean + deduplicate
-FACT → store immutable events
-DIM → store attributes (handle changes)
-```
+Streaming pipeline (clickstream data)
 
----
+Integration with Spark / Dataflow
 
-# 🔥 ONE-LINE SUMMARY
+Real-time analytics
 
-```text
-Facts are append-only events; dimensions handle change and history
-```
+Dashboarding layer (Looker / Tableau)
+
+
 
 ---
 
-# 🚀 PROJECT STATUS
+🧠 Key Learnings
 
-```text
-✔ RAW incremental ingestion
-✔ STAGING deduplication
-✔ FACT append-only incremental
-✔ DBT pipeline setup
-✔ DAG-based execution
-```
+This project demonstrates:
+
+Building an end-to-end data pipeline
+
+Designing scalable data models
+
+Writing analytical SQL for business insights
+
+Structuring dbt projects for production use
+
+
 
 ---
 
-If you want next, I can:
+👨‍💻 Author
 
-```text
-✔ Add SCD2 implementation section (proper, complete version)
-✔ Add dbt tests + documentation
-✔ Help you structure this into a GitHub-ready repo
-```
+Krishanu Sengupta
 
-Just tell me 👍
