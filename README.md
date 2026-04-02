@@ -16,7 +16,7 @@ Raw Data → Staging → Dimensions → Fact → Marts → Analytics
 
 ## 📂 Project Structure
 
-models/ staging/ stg_orders.sql stg_order_items.sql schema.yml
+models/ staging/ stg_orders.sql stg_order_items.sql schema.yml sources.yml
 
 marts/ dim/ dim_users.sql dim_products.sql dim_date.sql schema.yml
 
@@ -29,6 +29,98 @@ fact/
 
 analytics/
   analytics_revenue_trend.sql
+
+---
+
+## 📥 Data Sources
+
+The project uses raw source tables representing transactional e-commerce data.  
+These tables are treated as external sources and referenced in dbt using `source()`.
+
+---
+
+### `orders`
+
+| column       | description                         |
+|-------------|-------------------------------------|
+| order_id    | Unique order identifier             |
+| user_id     | Customer placing order              |
+| order_date  | Date of the order                   |
+| updated_at  | Last update timestamp for the order |
+
+**Example:**
+
+| order_id | user_id | order_date  | updated_at          |
+|----------|--------|-------------|---------------------|
+| 101      | 1      | 2024-01-01  | 2024-01-01 10:00:00 |
+
+---
+
+### `order_items`
+
+| column         | description                             |
+|---------------|-----------------------------------------|
+| order_item_id | Unique item identifier                  |
+| order_id      | Associated order                        |
+| product_id    | Product purchased                       |
+| quantity      | Number of units                         |
+| unit_price    | Price per unit of the product           |
+| updated_at    | Last update timestamp for the record    |
+
+**Example:**
+
+| order_item_id | order_id | product_id | quantity | unit_price | updated_at          |
+|---------------|----------|------------|----------|------------|---------------------|
+| 1             | 101      | 501        | 2        | 100.00     | 2024-01-01 10:05:00 |
+
+---
+
+### `users`
+
+| column       | description                         |
+|-------------|-------------------------------------|
+| user_id     | Unique user identifier              |
+| signup_date | User registration date              |
+| country     | User location                       |
+| updated_at  | Last profile update timestamp       |
+
+**Example:**
+
+| user_id | signup_date | country | updated_at          |
+|--------|-------------|--------|---------------------|
+| 1      | 2023-12-01  | India  | 2024-01-01 09:00:00 |
+
+---
+
+### `products`
+
+| column        | description                         |
+|--------------|-------------------------------------|
+| product_id   | Unique product identifier           |
+| product_name | Name of product                     |
+| category     | Product category                    |
+| price        | Default product price               |
+| updated_at   | Last product update timestamp       |
+
+**Example:**
+
+| product_id | product_name | category | price | updated_at          |
+|------------|-------------|----------|-------|---------------------|
+| 501        | Shoes       | Fashion  | 100.00| 2024-01-01 08:00:00 |
+
+---
+
+## 🔄 Data Ingestion & Assumptions
+
+This project focuses on the transformation layer using dbt.
+
+The raw data layer is assumed to be populated by an upstream ingestion system (e.g., ETL pipelines, streaming jobs, or external data loaders).
+
+- Raw tables (`orders`, `order_items`, `users`, `products`) are treated as source systems  
+- Change data capture (CDC) logic (e.g., `updated_at` based filtering) is assumed to be handled upstream  
+- dbt models operate on already available data and focus on transformations and analytics  
+
+The `updated_at` field is included in the schema to support future enhancements such as incremental models.
 
 ---
 
@@ -114,6 +206,7 @@ Example:
 ```bash
 dbt run
 dbt test
+```
 
 
 ---
@@ -158,20 +251,6 @@ Cost optimization strategies
 
 ---
 
-🔮 Future Enhancements
-
-Streaming pipeline (clickstream data)
-
-Integration with Spark / Dataflow
-
-Real-time analytics
-
-Dashboarding layer (Looker / Tableau)
-
-
-
----
-
 🧠 Key Learnings
 
 This project demonstrates:
@@ -191,4 +270,3 @@ Structuring dbt projects for production use
 👨‍💻 Author
 
 Krishanu Sengupta
-
