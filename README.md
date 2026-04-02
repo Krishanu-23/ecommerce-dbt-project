@@ -14,7 +14,7 @@ Raw Data → Staging → Dimensions → Fact → Marts → Analytics
 
 ---
 
-## 📂 Project Structure
+##   Project Structure
 ```text
 models/ staging/ stg_orders.sql stg_order_items.sql schema.yml sources.yml
 
@@ -224,7 +224,7 @@ The `fact_order_items` model is designed with incremental loading in mind:
 
 This design aligns with production data engineering practices for handling large and evolving datasets.
 
-## 🚀 How to Run
+##   How to Run
 
 ```bash
 dbt run
