@@ -200,6 +200,29 @@ Example:
 - Separation of concerns (model vs analytics)  
 
 ---
+## 🔄 Slowly Changing Dimensions & Incremental Models
+
+### SCD Type 2 (Snapshots)
+
+The `users` dimension is modeled as a Slowly Changing Dimension Type 2 using dbt snapshots.
+
+- Tracks historical changes in user attributes
+- Maintains multiple records per user with validity periods
+- Enables time-based analysis of user behavior
+
+### SCD Type 1
+
+Other dimensions such as `products` are treated as SCD Type 1, where only the latest state is maintained.
+
+### Incremental Models
+
+The `fact_order_items` model is designed with incremental loading in mind:
+
+- Uses `updated_at` to identify new or changed records
+- Avoids full table rebuilds for efficiency
+- Supports scaling for larger datasets
+
+This design aligns with production data engineering practices for handling large and evolving datasets.
 
 ## 🚀 How to Run
 
