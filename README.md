@@ -1,6 +1,6 @@
 # 🛒 E-commerce Data Pipeline (dbt + BigQuery Ready)
 
-## 📌 Overview
+##   Overview
 
 This project implements an end-to-end data pipeline for an **e-commerce analytics use case** using dbt.
 
@@ -8,7 +8,7 @@ It simulates a production-style workflow where raw transactional data is transfo
 
 ---
 
-## 🏗 Architecture
+##   Architecture
 
 Raw Data → Staging → Dimensions → Fact → Marts → Analytics
 
@@ -149,7 +149,7 @@ Example:
 
 ---
 
-## 🧱 Data Model
+##   Data Model
 
 ### 🔹 Fact Table
 - `fact_order_items`  
