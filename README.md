@@ -1,4 +1,4 @@
-# 🛒 E-commerce Data Pipeline (dbt + BigQuery Ready)
+#   E-commerce Data Pipeline (dbt + BigQuery Ready)
 
 ##   Overview
 
@@ -32,7 +32,7 @@ analytics/
 ```
 ---
 
-## 📥 Data Sources
+##   Data Sources
 
 The project uses raw source tables representing transactional e-commerce data.  
 These tables are treated as external sources and referenced in dbt using `source()`.
@@ -110,7 +110,7 @@ These tables are treated as external sources and referenced in dbt using `source
 
 ---
 
-## 🔄 Data Ingestion & Assumptions
+##   Data Ingestion & Assumptions
 
 This project focuses on the transformation layer using dbt.
 
@@ -124,7 +124,7 @@ The `updated_at` field is included in the schema to support future enhancements 
 
 ---
 
-## 🔹 Staging Layer
+##   Staging Layer
 
 The staging layer standardizes and cleans raw source data.
 
@@ -151,21 +151,21 @@ Example:
 
 ##   Data Model
 
-### 🔹 Fact Table
+###   Fact Table
 - `fact_order_items`  
   - Grain: **1 row per order_item**  
   - Contains transactional data enriched with keys  
 
 ---
 
-### 🔹 Dimension Tables
+###   Dimension Tables
 - `dim_users`  
 - `dim_products`  
 - `dim_date`  
 
 ---
 
-### 🔹 Marts
+###   Marts
 
 #### `mart_orders`
 - Grain: **1 row per order_item**  
@@ -182,7 +182,7 @@ Example:
 
 ---
 
-### 🔹 Analytics Layer
+###   Analytics Layer
 
 #### `analytics_revenue_trend`
 - Running (cumulative) revenue  
@@ -200,7 +200,7 @@ Example:
 - Separation of concerns (model vs analytics)  
 
 ---
-## 🔄 Slowly Changing Dimensions & Incremental Models
+##   Slowly Changing Dimensions & Incremental Models
 
 ### SCD Type 2 (Snapshots)
 
@@ -238,11 +238,11 @@ dbt test
 
 The project includes:
 
-not_null tests
+- not_null tests
 
-unique tests
+- unique tests
 
-relationships tests (fact ↔ dimensions)
+- relationships tests (fact ↔ dimensions)
 
 
 
@@ -250,13 +250,13 @@ relationships tests (fact ↔ dimensions)
 
 ##  Business Use Cases
 
-Analyze revenue trends over time
+- Analyze revenue trends over time
 
-Identify top-performing products
+- Identify top-performing products
 
-Track order volume and sales performance
+- Track order volume and sales performance
 
-Enable user-level analytics and segmentation
+- Enable user-level analytics and segmentation
 
 
 
@@ -264,11 +264,11 @@ Enable user-level analytics and segmentation
 
 ##  Work in Progress
 
-BigQuery partitioning & clustering
+- BigQuery partitioning & clustering
 
-Incremental models for large tables
+- Incremental models for large tables
 
-Cost optimization strategies
+- Cost optimization strategies
 
 
 
@@ -276,15 +276,15 @@ Cost optimization strategies
 
 ##  Key Learnings
 
-This project demonstrates:
+- This project demonstrates:
 
-Building an end-to-end data pipeline
+- Building an end-to-end data pipeline
 
-Designing scalable data models
+- Designing scalable data models
 
-Writing analytical SQL for business insights
+- Writing analytical SQL for business insights
 
-Structuring dbt projects for production use
+- Structuring dbt projects for production use
 
 
 
@@ -292,4 +292,4 @@ Structuring dbt projects for production use
 
 ##  Author
 
-Krishanu Sengupta
+- Krishanu Sengupta
