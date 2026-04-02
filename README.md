@@ -15,7 +15,7 @@ Raw Data → Staging → Dimensions → Fact → Marts → Analytics
 ---
 
 ## 📂 Project Structure
-
+```text
 models/ staging/ stg_orders.sql stg_order_items.sql schema.yml sources.yml
 
 marts/ dim/ dim_users.sql dim_products.sql dim_date.sql schema.yml
@@ -29,7 +29,7 @@ fact/
 
 analytics/
   analytics_revenue_trend.sql
-
+```
 ---
 
 ## 📥 Data Sources
@@ -138,7 +138,7 @@ Example:
 
 ---
 
-## ⚙️ Key Features
+##   Key Features
 
 - Layered data modeling using dbt  
 - Star schema design (fact + dimensions)  
@@ -190,7 +190,7 @@ Example:
 
 ---
 
-## 🧠 Concepts Covered
+##   Concepts Covered
 
 - Dimensional modeling (star schema)  
 - Grain definition and correctness  
@@ -234,7 +234,7 @@ dbt test
 
 ---
 
-🧪 Testing
+##   Testing
 
 The project includes:
 
@@ -248,7 +248,7 @@ relationships tests (fact ↔ dimensions)
 
 ---
 
-📊 Business Use Cases
+##  Business Use Cases
 
 Analyze revenue trends over time
 
@@ -262,7 +262,7 @@ Enable user-level analytics and segmentation
 
 ---
 
-🚧 Work in Progress
+##  Work in Progress
 
 BigQuery partitioning & clustering
 
@@ -274,7 +274,7 @@ Cost optimization strategies
 
 ---
 
-🧠 Key Learnings
+##  Key Learnings
 
 This project demonstrates:
 
@@ -290,6 +290,6 @@ Structuring dbt projects for production use
 
 ---
 
-👨‍💻 Author
+##  Author
 
 Krishanu Sengupta
