@@ -1,0 +1,23 @@
+version: 2
+models:
+  - name: dim_users
+    description: "Dimension table for users data"
+    columns:
+      - name: user_id
+        tests:
+        - not_null
+        - unique
+  - name: dim_products
+    description: "Dimension table for products data"
+    columns:
+      - name: product_id
+        tests:
+        - not_null
+        - unique        
+  - name: dim_date
+    description: "Dimension table for dates"
+    columns:
+      - name: date_day
+        tests:
+        - not_null
+        - unique        

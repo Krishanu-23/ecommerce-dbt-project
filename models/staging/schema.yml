@@ -1,0 +1,28 @@
+version: 2
+sources:
+  - name: raw
+    schema: public
+    tables:
+      - name: raw_orders
+      - name: raw_products
+      - name: raw_users
+      - name: raw_order_items
+models:
+  - name: stg_orders
+    description: "Staging table for orders data"
+    columns:
+      - name: order_id
+        tests:
+        - not_null 
+  - name: stg_products
+    description: "Staging table for products data"
+    columns:
+      - name: product_id
+        tests:
+        - not_null
+  - name: stg_users
+    description: "Staging table for users data"
+    columns:
+      - name: user_id
+        tests:
+        - not_null
